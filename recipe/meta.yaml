@@ -16,8 +16,7 @@ build:
   number: 2
   skip: true  # [win]
   script:
-    - set -x
-    - make build WHAT=cmd/oc
+    - make build WHAT=cmd/oc@v$PKG_VERSION
     - cp _output/local/bin/*/*/oc $PREFIX/bin
 
 requirements:
