@@ -16,6 +16,7 @@ build:
   number: 2
   skip: true  # [win]
   script:
+    - set -x
     - make build WHAT=cmd/oc
     - cp _output/local/bin/*/*/oc $PREFIX/bin
 
