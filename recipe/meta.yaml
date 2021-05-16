@@ -16,14 +16,16 @@ build:
   number: 2
   skip: true  # [win]
   script:
-    - make build WHAT=cmd/oc@v$PKG_VERSION
+    - make build WHAT=cmd/oc
+    # For go 1.16 add @v$PKG_VERSION
     - cp _output/local/bin/*/*/oc $PREFIX/bin
 
 requirements:
   build:
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
-    - {{ compiler("cgo") }}
+    # GO 1.16 has issues but there haven't been any releases in a while so it's not worth fixing
+    - {{ compiler("cgo") }} 1.15.*
     - make
   host:
     - krb5
