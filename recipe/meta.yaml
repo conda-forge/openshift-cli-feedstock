@@ -16,8 +16,7 @@ build:
   number: 3
   skip: true  # [win]
   script:
-    - make build WHAT=cmd/oc
-    # For go 1.16 add @v$PKG_VERSION
+    - make build WHAT=cmd/oc@v$PKG_VERSION
     - cp _output/local/bin/*/*/oc $PREFIX/bin
 
 requirements:
