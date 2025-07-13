@@ -13,4 +13,4 @@ docker_image:
 krb5:
 - '1.21'
 target_platform:
-- linux-64
+- linux-ppc64le
