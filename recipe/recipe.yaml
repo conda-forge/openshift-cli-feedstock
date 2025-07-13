@@ -1,0 +1,58 @@
+context:
+  name: openshift-cli
+  version: "4.1.0"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - git: https://github.com/openshift/origin.git
+    rev: v${{ version }}
+    target_directory: src
+
+build:
+  number: 3
+  script:
+    - cd src
+    - ./hack/build-go.sh cmd/oc
+    - if: win
+      then: dir _output
+      else: ls -la _output
+    - if: win
+      then: cp _output/local/bin/*/*/oc.exe %LIBRARY_BIN%/
+      else: cp _output/local/bin/*/*/oc $PREFIX/bin/
+    - go-licenses save ./cmd/oc --save_path ../library_licenses
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('go-cgo') }}
+    - go-licenses
+  host:
+    - krb5
+  run: 
+    - krb5
+
+tests:
+  - script:
+      - oc --help
+
+about:
+  homepage: https://www.okd.io/
+  summary: OpenShift Client
+  license: Apache-2.0
+  license_file:
+    - src/LICENSE
+    - library_licenses/
+  description: |
+    This client helps you develop, build, deploy, and run your applications on any
+    OpenShift or Kubernetes cluster. It also includes the administrative
+    commands for managing a cluster under the 'adm' subcommand.
+  repository: https://github.com/openshift/origin
+  documentation: https://docs.okd.io/latest/cli_reference/index.html
+
+extra:
+  recipe-maintainers:
+    - chrisburr
+    - delsner
