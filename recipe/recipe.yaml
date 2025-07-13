@@ -23,7 +23,7 @@ build:
       - if: win
         then: cp _output/local/bin/*/*/oc.exe %LIBRARY_BIN%/
         else: cp _output/local/bin/*/*/oc $PREFIX/bin/
-      - go-licenses save ./cmd/oc --save_path ../library_licenses
+      # - go-licenses save ./cmd/oc --save_path ../library_licenses
     env: 
       GO111MODULE: off
 
@@ -33,7 +33,7 @@ requirements:
     - ${{ stdlib("c") }}
     - ${{ compiler('go-cgo') }}
     - make
-    - go-licenses
+    # - go-licenses
   host:
     - krb5
   run: 
@@ -49,7 +49,7 @@ about:
   license: Apache-2.0
   license_file:
     - src/LICENSE
-    - library_licenses/
+    # - library_licenses/
   description: |
     This client helps you develop, build, deploy, and run your applications on any
     OpenShift or Kubernetes cluster. It also includes the administrative
