@@ -8,27 +8,31 @@ package:
 
 source:
   - git: https://github.com/openshift/origin.git
-    rev: v${{ version }}
+    tag: v${{ version }}
     target_directory: src
 
 build:
   number: 3
   script:
-    - cd src
-    - ./hack/build-go.sh cmd/oc
-    - if: win
-      then: dir _output
-      else: ls -la _output
-    - if: win
-      then: cp _output/local/bin/*/*/oc.exe %LIBRARY_BIN%/
-      else: cp _output/local/bin/*/*/oc $PREFIX/bin/
-    - go-licenses save ./cmd/oc --save_path ../library_licenses
+    content: 
+      - cd src
+      - make build WHAT=cmd/oc
+      - if: win
+        then: dir _output
+        else: ls -la _output
+      - if: win
+        then: cp _output/local/bin/*/*/oc.exe %LIBRARY_BIN%/
+        else: cp _output/local/bin/*/*/oc $PREFIX/bin/
+      - go-licenses save ./cmd/oc --save_path ../library_licenses
+    env: 
+      GO111MODULE: off
 
 requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ stdlib("c") }}
     - ${{ compiler('go-cgo') }}
+    - make
     - go-licenses
   host:
     - krb5
