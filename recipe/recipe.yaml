@@ -33,6 +33,9 @@ requirements:
     - ${{ stdlib("c") }}
     - ${{ compiler('go-cgo') }}
     - make
+    # awk, grep, which
+    - if: win
+      then: git
     # - go-licenses
   host:
     - krb5
