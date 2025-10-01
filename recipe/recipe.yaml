@@ -13,27 +13,33 @@ package:
 # Source section
 source:
   git: https://github.com/openshift/oc.git
-  rev: a2450418f7b12a71e8f3562a4e9aa8a976bbf85b
+  # Using commit SHA instead of tag due to rattler-build checkout issues
+  rev: a2450418f7b12a71e8f3562a4e9aa8a976bbf85b # openshift-clients-4.16.0-202406131906
 
 # Build configuration
 build:
   number: 0
-  skip:
-    - win
   script:
-    - make oc
+    # Disable GSSAPI to avoid missing Go bindings
+    - make oc GO_BUILD_FLAGS="-mod=vendor -tags 'include_gcs include_oss containers_image_openpgp'"
     - if: unix
       then:
         - cp oc $PREFIX/bin/
+    - if: win
+      then:
+        - cp oc.exe $PREFIX/bin/oc.exe
 
 # Requirements
 requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
+    # - ${{ stdlib('c') }}
     - go >=1.15.2
     - make
     - git
+    - krb5-static
+    - pkg-config
   host:
     - krb5
   run:
