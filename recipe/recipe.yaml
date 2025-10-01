@@ -20,6 +20,12 @@ source:
 build:
   number: 0
   script:
+    # Set macOS deployment target for compatibility with older SDKs
+    - if: osx
+      then:
+        - export MACOSX_DEPLOYMENT_TARGET=10.9
+        - export CGO_CFLAGS="-mmacosx-version-min=10.9 $CGO_CFLAGS"
+        - export CGO_LDFLAGS="-mmacosx-version-min=10.9 $CGO_LDFLAGS"
     # Disable GSSAPI to avoid missing Go bindings
     - make oc GO_BUILD_FLAGS="-mod=vendor -tags 'include_gcs include_oss containers_image_openpgp'"
     - if: unix
@@ -42,6 +48,7 @@ requirements:
     - git >=2.0
     - krb5 >=1.21
     - pkg-config >=0.29
+    - ld_impl_linux-aarch64 # [target_platform == "linux-aarch64"]
 
 # Tests
 tests:

@@ -1,16 +1,12 @@
 c_compiler:
-  - vs2022
+- vs2022
 c_stdlib:
-  - vs
-cgo_compiler:
-  - go-cgo >=1.15.2
+- vs
 channel_sources:
-  - conda-forge
+- conda-forge
 channel_targets:
-  - conda-forge main
+- conda-forge main
 cxx_compiler:
-  - vs2022
-krb5:
-  - "1.21"
+- vs2022
 target_platform:
-  - win-64
+- win-64
