@@ -1,0 +1,64 @@
+schema_version: 1
+
+# Context section replaces set variables
+context:
+  name: "openshift-cli"
+  version: "4.16.0"
+
+# Package information
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+# Source section
+source:
+  git: https://github.com/openshift/oc.git
+  rev: openshift-clients-${{ version }}-202406131906
+
+# Build configuration
+build:
+  number: 0
+  skip:
+    - win
+  script:
+    - make oc
+    - cp oc $PREFIX/bin/ # [unix]
+
+# Requirements
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('cxx') }}
+    - ${{ compiler('go-cgo') }}
+    - make
+    - git
+  host:
+    - krb5
+  run:
+    - krb5
+
+# Tests
+tests:
+  - script:
+      - oc --help
+
+# About section
+about:
+  homepage: https://www.okd.io/
+  summary: OpenShift Command Line Interface
+  description: |
+    The OpenShift Command Line Interface (CLI), is a set of tools built on top of kubectl
+    that help you work with OpenShift. With the CLI, you can create applications and manage
+    OpenShift resources. It provides its full capabilities to connect with any Kubernetes
+    compliant cluster, and adds commands simplifying interaction with an OpenShift cluster.
+  license: Apache-2.0
+  license_file: LICENSE
+  repository: https://github.com/openshift/oc
+  documentation: https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html
+
+# Extra section
+extra:
+  recipe-maintainers:
+    - chrisburr
+    - delsner
