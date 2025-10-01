@@ -24,26 +24,24 @@ build:
     - make oc GO_BUILD_FLAGS="-mod=vendor -tags 'include_gcs include_oss containers_image_openpgp'"
     - if: unix
       then:
+        - mkdir -p $PREFIX/bin/
         - cp oc $PREFIX/bin/
     - if: win
       then:
-        - cp oc.exe $PREFIX/bin/oc.exe
+        - if not exist "%PREFIX%\bin" mkdir "%PREFIX%\bin"
+        - cp oc.exe %PREFIX%\bin\oc.exe
 
 # Requirements
 requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
-    # - ${{ stdlib('c') }}
-    - go >=1.15.2
-    - make
-    - git
-    - krb5-static
-    - pkg-config
-  host:
-    - krb5
-  run:
-    - krb5
+    - ${{ stdlib('c') }}
+    - ${{ compiler('go-cgo') }} >=1.15.2
+    - make >=4.0
+    - git >=2.0
+    - krb5 >=1.21
+    - pkg-config >=0.29
 
 # Tests
 tests:
