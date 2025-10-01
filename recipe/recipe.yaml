@@ -22,7 +22,9 @@ build:
     - win
   script:
     - make oc
-    - cp oc $PREFIX/bin/ # [unix]
+    - if: unix
+      then:
+        - cp oc $PREFIX/bin/
 
 # Requirements
 requirements:
