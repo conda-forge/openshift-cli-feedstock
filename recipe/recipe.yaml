@@ -13,7 +13,7 @@ package:
 # Source section
 source:
   git: https://github.com/openshift/oc.git
-  rev: openshift-clients-${{ version }}-202406131906
+  rev: a2450418f7b12a71e8f3562a4e9aa8a976bbf85b
 
 # Build configuration
 build:
@@ -30,9 +30,8 @@ build:
 requirements:
   build:
     - ${{ compiler('c') }}
-    - ${{ stdlib("c") }}
     - ${{ compiler('cxx') }}
-    - ${{ compiler('go-cgo') }}
+    - go >=1.15.2
     - make
     - git
   host:
