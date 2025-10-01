@@ -1,57 +1,53 @@
 {% set name = "openshift-cli" %}
-{% set version = "4.1.0" %}
+{% set version = "4.16.0" %}
 
 package:
-  name: {{ name }}
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  # Tarballs are not used as the build system relies heavily on the state of
-  # the git repository and updates will be difficult if it's patched with
-  # these details
-  git_url: https://github.com/openshift/origin.git
-  git_rev: v{{ version }}
+  git_url: https://github.com/openshift/oc.git
+  git_rev: openshift-clients-{{ version }}-202406131906
 
 build:
-  number: 2
+  number: 0
   skip: true  # [win]
   script:
-    - make build WHAT=cmd/oc
-    # For go 1.16 add @v$PKG_VERSION
-    - cp _output/local/bin/*/*/oc $PREFIX/bin
+    - make oc
+    - cp oc $PREFIX/bin/  # [unix]
 
 requirements:
   build:
-    - {{ compiler("c") }}
-    - {{ compiler("cxx") }}
-    # GO 1.16 has issues but there haven't been any releases in a while so it's not worth fixing
-    - {{ compiler("cgo") }} 1.15.*
+    - {{ compiler('c') }}
+    - {{ stdlib("c") }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('go-cgo') }}
     - make
+    - git
   host:
     - krb5
-    - socat  # [unix]
   run:
     - krb5
-    - socat  # [unix]
 
 test:
   commands:
-      - oc --help
+    - oc --help
 
 about:
-  home: https://www.okd.io/
+  homepage: https://www.okd.io/
+  summary: OpenShift Command Line Interface
+  description: |
+    The OpenShift Command Line Interface (CLI), is a set of tools built on top of kubectl
+    that help you work with OpenShift. With the CLI, you can create applications and manage
+    OpenShift resources. It provides its full capabilities to connect with any Kubernetes
+    compliant cluster, and adds commands simplifying interaction with an OpenShift cluster.
   license: Apache-2.0
   license_family: APACHE
   license_file: LICENSE
-  summary: 'OpenShift Client'
-
-  description: |
-    This client helps you develop, build, deploy, and run your applications on any
-    OpenShift or Kubernetes cluster. It also includes the administrative
-    commands for managing a cluster under the 'adm' subcommand.
-  dev_url: https://github.com/openshift/origin
-  doc_url: https://docs.okd.io/latest/cli_reference/index.html
+  dev_url: https://github.com/openshift/oc
+  doc_url: https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html
 
 extra:
   recipe-maintainers:
     - chrisburr
+    - delsner
