@@ -20,17 +20,14 @@ source:
 build:
   number: 0
   script:
-    # Set macOS deployment target for compatibility with older SDKs
-    - if: osx
-      then:
-        - export MACOSX_DEPLOYMENT_TARGET=10.9
-        - export CGO_CFLAGS="-mmacosx-version-min=10.9 $CGO_CFLAGS"
-        - export CGO_LDFLAGS="-mmacosx-version-min=10.9 $CGO_LDFLAGS"
-    # Disable CGO for cross-compilation to avoid linker issues
+    # Disable CGO for cross-compilation and macOS to avoid linker issues
     - if: target_platform == "linux-aarch64"
       then:
         - export CGO_ENABLED=0
     - if: target_platform == "osx-arm64"
+      then:
+        - export CGO_ENABLED=0
+    - if: target_platform == "osx-64"
       then:
         - export CGO_ENABLED=0
     # Disable GSSAPI to avoid missing Go bindings
@@ -50,10 +47,10 @@ requirements:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
     - ${{ stdlib('c') }}
-    - if: target_platform not in ("linux-aarch64", "osx-arm64")
+    - if: target_platform not in ("linux-aarch64", "osx-arm64", "osx-64")
       then:
         - ${{ compiler('go-cgo') }} >=1.15.2
-    - if: target_platform in ("linux-aarch64", "osx-arm64")
+    - if: target_platform in ("linux-aarch64", "osx-arm64", "osx-64")
       then:
         - go >=1.15.2
     - make >=4.0
