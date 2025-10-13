@@ -20,7 +20,7 @@ build:
         - export GO111MODULE=on
         - go build -mod=vendor -tags 'include_gcs include_oss containers_image_openpgp' -ldflags "-X github.com/openshift/oc/pkg/version.versionFromGit=v$PKG_VERSION -X github.com/openshift/oc/pkg/version.gitTreeState=clean" -o oc ./cmd/oc
         - go-licenses csv ./cmd/oc > licenses.csv || touch licenses.csv
-        - go-licenses save ./cmd/oc --save_path=licenses/ || mkdir -p licenses
+        - go-licenses save ./cmd/oc --save_path=licenses/
         - mkdir -p $PREFIX/bin/
         - mkdir -p $PREFIX/share/doc/$PKG_NAME/
         - cp oc $PREFIX/bin/
