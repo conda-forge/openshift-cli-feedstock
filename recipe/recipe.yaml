@@ -30,7 +30,7 @@ build:
         - set GO111MODULE=on
         - go build -mod=vendor -tags "include_gcs include_oss containers_image_openpgp" -ldflags "-X github.com/openshift/oc/pkg/version.versionFromGit=v%PKG_VERSION% -X github.com/openshift/oc/pkg/version.gitTreeState=clean" -o oc.exe ./cmd/oc
         - go-licenses csv ./cmd/oc > licenses.csv || echo. > licenses.csv
-        - go-licenses save ./cmd/oc --save_path=licenses/ || mkdir licenses
+        - go-licenses save ./cmd/oc --save_path=licenses/
         - if not exist "%PREFIX%\bin" mkdir "%PREFIX%\bin"
         - if not exist "%PREFIX%\share\doc\%PKG_NAME%" mkdir "%PREFIX%\share\doc\%PKG_NAME%"
         - copy oc.exe "%PREFIX%\bin\oc.exe"
