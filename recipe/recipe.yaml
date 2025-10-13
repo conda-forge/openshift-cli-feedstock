@@ -15,50 +15,31 @@ source:
 build:
   number: 0
   script:
+    - go-licenses save ./cmd/oc --save_path ./library_licenses/
     - if: unix
       then:
-        - export GO111MODULE=on
-        - go build -mod=vendor -tags 'include_gcs include_oss containers_image_openpgp' -ldflags "-X github.com/openshift/oc/pkg/version.versionFromGit=v$PKG_VERSION -X github.com/openshift/oc/pkg/version.gitTreeState=clean" -o oc ./cmd/oc
-        - go-licenses csv ./cmd/oc > licenses.csv || touch licenses.csv
-        - go-licenses save ./cmd/oc --save_path=licenses/
-        - mkdir -p $PREFIX/bin/
-        - mkdir -p $PREFIX/share/doc/$PKG_NAME/
-        - cp oc $PREFIX/bin/
-        - cp oc $PREFIX/bin/okd-cli
+        - export TAGS='include_gcs include_oss containers_image_openpgp'
+        - export LDFLAGS="-X github.com/openshift/oc/pkg/version.versionFromGit=v$PKG_VERSION -X github.com/openshift/oc/pkg/version.gitTreeState=clean"
+        - go build -o $PREFIX/bin/oc -mod=vendor -tags "$TAGS" -ldflags "$LDFLAGS" ./cmd/oc
+        - cp $PREFIX/bin/oc $PREFIX/bin/okd-cli
     - if: win
       then:
-        - set GO111MODULE=on
-        - go build -mod=vendor -tags "include_gcs include_oss containers_image_openpgp" -ldflags "-X github.com/openshift/oc/pkg/version.versionFromGit=v%PKG_VERSION% -X github.com/openshift/oc/pkg/version.gitTreeState=clean" -o oc.exe ./cmd/oc
-        - go-licenses csv ./cmd/oc > licenses.csv || echo. > licenses.csv
-        - go-licenses save ./cmd/oc --save_path=licenses/
-        - if not exist "%PREFIX%\bin" mkdir "%PREFIX%\bin"
-        - if not exist "%PREFIX%\share\doc\%PKG_NAME%" mkdir "%PREFIX%\share\doc\%PKG_NAME%"
-        - copy oc.exe "%PREFIX%\bin\oc.exe"
-        - copy oc.exe "%PREFIX%\bin\okd-cli.exe"
+        - set TAGS=include_gcs include_oss containers_image_openpgp
+        - set LDFLAGS=-X github.com/openshift/oc/pkg/version.versionFromGit=v%PKG_VERSION% -X github.com/openshift/oc/pkg/version.gitTreeState=clean
+        - go build -o %LIBRARY_BIN%\oc.exe -mod=vendor -tags "%TAGS%" -ldflags "%LDFLAGS%" ./cmd/oc
+        - copy "%LIBRARY_BIN%\oc.exe" "%LIBRARY_BIN%\okd-cli.exe"
 
 requirements:
   build:
-    - ${{ compiler('c') }}
-    - ${{ compiler('cxx') }}
-    - if: build_platform != target_platform
-      then:
-        - ${{ stdlib('c') }}
-    - ${{ compiler('go-nocgo') }} >=1.15.2
+    - ${{ compiler('go-nocgo') }} >=1.16
     - go-licenses >=2.0.1
-    - if: unix
-      then:
-        - make >=4.0
-    - git >=2.0
-    - krb5 >=1.21
-    - pkg-config >=0.29
 
 tests:
   - package_contents:
       bin:
         - oc
         - okd-cli
-  - script:
-      - oc --help
+      strict: true
 
 about:
   homepage: https://www.okd.io/
@@ -71,8 +52,7 @@ about:
   license: Apache-2.0
   license_file:
     - LICENSE
-    - licenses.csv
-    - licenses/
+    - library_licenses/
   repository: https://github.com/openshift/oc
   documentation: https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html
 
