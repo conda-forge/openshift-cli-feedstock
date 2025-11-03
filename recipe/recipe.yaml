@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: "openshift-client"
-  version: "4.19.15"
+  version: "4.20.2"
 
 package:
   name: "openshift-cli"
@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${{ version }}/${{ name }}-src.tar.gz
-  sha256: 4c23bda233eaac582b812b9d4783be71f218de5124d673b4325377e8f325be2c
+  sha256: e5cfb94ed2d4c819287ab703963f53b7cfc5bc59c92ef6728590e47ebcd2cb20
 
 build:
   number: 0
